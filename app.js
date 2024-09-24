@@ -24,6 +24,9 @@ const todo = async () => {
   } else if (action === "2") {
     // View existing customers
     await viewCustomers();
+  } else if (action === "3") {
+    // updating customer info
+    await updateCustomer();
   } else {
     console.log("Invalid selection. Please choose 1 or 2.");
   }
@@ -31,6 +34,7 @@ const todo = async () => {
 
 /*------------------------------ Query Functions -----------------------------*/
 
+//for prompt 1 creating customer
 const createCustomer = async () => {
   try {
     await connect(); // Connect to MongoDB
@@ -47,6 +51,7 @@ const createCustomer = async () => {
   }
 };
 
+//for prompt 2 viewing all customers
 const viewCustomers = async () => {
   try {
     await connect(); // Connect to MongoDB
@@ -56,6 +61,29 @@ const viewCustomers = async () => {
     console.error("Error viewing customers:", error);
   } finally {
     await disconnect(); // Disconnect from MongoDB
+  }
+};
+
+// for prompt 3 updating all customers
+const updateCustomer = async () => {
+  try {
+    await connect(); // Connect to MongoDB
+    const users = await Customer.find({});
+    console.log("Below is a list of customers: ", users);
+    const userID = prompt(
+      "Copy and past the id of the customer you would like to update here: "
+    );
+    const newName = prompt("Enter the new name for the customer: ");
+    const newAge = prompt("Enter the new age for the customer: ");
+
+    const newCustomer = await Customer.findByIdAndUpdate(userID, {
+      name: newName,
+      age: newAge,
+    });
+  } catch (error) {
+    console.error("We cannot find that ID");
+  } finally {
+    await disconnect();
   }
 };
 
