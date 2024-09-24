@@ -27,8 +27,13 @@ const todo = async () => {
   } else if (action === "3") {
     // updating customer info
     await updateCustomer();
+  } else if (action === "4") {
+    // deleting customer info
+    await deleteCustomer();
+  } else if (action === "5") {
+    console.log("You have been disconnected");
   } else {
-    console.log("Invalid selection. Please choose 1 or 2.");
+    console.log("Invalid selection. Goodbye");
   }
 };
 
@@ -80,6 +85,24 @@ const updateCustomer = async () => {
       name: newName,
       age: newAge,
     });
+  } catch (error) {
+    console.error("We cannot find that ID");
+  } finally {
+    await disconnect();
+  }
+};
+
+// for prompt 4 updating all customers
+const deleteCustomer = async () => {
+  try {
+    await connect(); // Connect to MongoDB
+    const users = await Customer.find({});
+    console.log("Below is a list of customers: ", users);
+    const userID = prompt(
+      "Copy and past the id of the customer you would like to delete: "
+    );
+    const deleteCustomer = await Customer.findByIdAndDelete(userID);
+    console.log("That customer has been terminated.");
   } catch (error) {
     console.error("We cannot find that ID");
   } finally {
